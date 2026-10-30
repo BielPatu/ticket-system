@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Sistema de gerenciamento de chamados de suporte.">
+  <title>Ticketing System | Central de Chamados</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#" aria-label="Ticketing System - início">
+        <span class="brand-mark">T</span>
+        <span><strong>Ticketing</strong><small>Central de suporte</small></span>
+      </a>
+
+      <p class="nav-label">MENU PRINCIPAL</p>
+      <nav class="navigation" aria-label="Navegação principal">
+        <button class="nav-item active" type="button" data-view="dashboard">
+          <span class="nav-icon" aria-hidden="true">▦</span> Dashboard
+        </button>
+        <button class="nav-item" type="button" data-view="tickets">
+          <span class="nav-icon" aria-hidden="true">▤</span> Todos os chamados
+        </button>
+        <button class="nav-item" type="button" data-view="new-ticket">
+          <span class="nav-icon" aria-hidden="true">＋</span> Abrir chamado
+        </button>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <div class="profile-avatar" aria-hidden="true">SU</div>
+        <div class="profile-info"><strong>Usuário do sistema</strong><span>Atendimento</span></div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div class="topbar-heading">
+          <button class="menu-toggle" id="menu-toggle" type="button" aria-label="Abrir menu">☰</button>
+          <div><p class="eyebrow">CENTRAL DE ATENDIMENTO</p><h1 id="page-title">Dashboard</h1></div>
+        </div>
+        <button class="primary-button" id="header-new-ticket" type="button"><span aria-hidden="true">＋</span> Novo chamado</button>
+      </header>
+
+      <section class="view" id="dashboard-view">
+        <div class="welcome-row">
+          <div><h2>Visão geral</h2><p>Acompanhe os indicadores e a situação dos chamados.</p></div>
+          <span class="date-label" id="today-label"></span>
+        </div>
+
+        <div class="metrics-grid" aria-label="Métricas dos chamados">
+          <article class="metric-card">
+            <div class="metric-top"><span class="metric-label">Total de chamados</span><span class="metric-icon icon-blue">▤</span></div>
+            <strong class="metric-value" id="metric-total">0</strong><span class="metric-note">Chamados cadastrados</span>
+          </article>
+          <article class="metric-card">
+            <div class="metric-top"><span class="metric-label">Em andamento</span><span class="metric-icon icon-orange">◷</span></div>
+            <strong class="metric-value" id="metric-progress">0</strong><span class="metric-note">Em atendimento</span>
+          </article>
+          <article class="metric-card">
+            <div class="metric-top"><span class="metric-label">Resolvidos</span><span class="metric-icon icon-green">✓</span></div>
+            <strong class="metric-value" id="metric-resolved">0</strong><span class="metric-note">Concluídos</span>
+          </article>
+          <article class="metric-card">
+            <div class="metric-top"><span class="metric-label">Aguardando resposta</span><span class="metric-icon icon-purple">…</span></div>
+            <strong class="metric-value" id="metric-waiting">0</strong><span class="metric-note">Aguardando retorno</span>
+          </article>
+        </div>
+
+        <section class="panel">
+          <div class="panel-heading">
+            <div><h2>Chamados recentes</h2><p>Últimas solicitações registradas no sistema.</p></div>
+            <button class="text-button" type="button" data-view="tickets">Ver todos <span aria-hidden="true">→</span></button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Chamado</th><th>Categoria</th><th>Prioridade</th><th>Status</th><th>Data</th><th>Ação</th></tr></thead>
+              <tbody id="recent-tickets-body"></tbody>
+            </table>
+          </div>
+          <p class="empty-state hidden" id="recent-empty">Nenhum chamado cadastrado. Abra um novo chamado para começar.</p>
+        </section>
+      </section>
+
+      <section class="view hidden" id="tickets-view">
+        <div class="welcome-row">
+          <div><h2>Todos os chamados</h2><p>Pesquise, filtre e atualize as solicitações registradas.</p></div>
+          <button class="primary-button" type="button" data-view="new-ticket">＋ Abrir chamado</button>
+        </div>
+        <section class="panel">
+          <div class="filters">
+            <label class="search-field"><span aria-hidden="true">⌕</span><input id="search-input" type="search" placeholder="Buscar por título ou descrição..." aria-label="Buscar chamados"></label>
+            <label class="filter-field"><span>Status</span><select id="filter-status"><option value="">Todos os status</option><option>Aberto</option><option>Em andamento</option><option>Aguardando resposta</option><option>Resolvido</option></select></label>
+            <label class="filter-field"><span>Categoria</span><select id="filter-category"><option value="">Todas as categorias</option><option>Suporte Técnico</option><option>Infraestrutura</option><option>Software</option><option>Outro</option></select></label>
+            <label class="filter-field"><span>Data inicial</span><input id="filter-start" type="date"></label>
+            <label class="filter-field"><span>Data final</span><input id="filter-end" type="date"></label>
+            <button class="secondary-button" id="clear-filters" type="button">Limpar filtros</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Chamado</th><th>Categoria</th><th>Prioridade</th><th>Status</th><th>Data de abertura</th><th>Ação</th></tr></thead>
+              <tbody id="tickets-body"></tbody>
+            </table>
+          </div>
+          <p class="result-count" id="result-count" aria-live="polite"></p>
+          <p class="empty-state hidden" id="tickets-empty">Nenhum chamado corresponde aos filtros informados.</p>
+        </section>
+      </section>
+
+      <section class="view hidden" id="new-ticket-view">
+        <div class="welcome-row"><div><h2>Abrir novo chamado</h2><p>Descreva o problema para que a equipe possa ajudar.</p></div></div>
+        <section class="panel form-panel">
+          <form id="ticket-form" novalidate>
+            <div class="form-section-title"><span class="section-number">1</span><div><h3>Informações do chamado</h3><p>Preencha os campos obrigatórios abaixo.</p></div></div>
+            <div class="form-grid">
+              <label class="form-field full-width"><span>Título <b>*</b></span><input id="ticket-title" name="title" type="text" maxlength="100" placeholder="Ex.: Computador não inicia" required><small class="field-error" id="title-error"></small></label>
+              <label class="form-field"><span>Categoria <b>*</b></span><select id="ticket-category" name="category" required><option value="">Selecione uma categoria</option><option>Suporte Técnico</option><option>Infraestrutura</option><option>Software</option><option>Outro</option></select><small class="field-error" id="category-error"></small></label>
+              <label class="form-field"><span>Prioridade <b>*</b></span><select id="ticket-priority" name="priority" required><option value="">Selecione a prioridade</option><option>Baixa</option><option>Média</option><option>Alta</option></select><small class="field-error" id="priority-error"></small></label>
+              <label class="form-field full-width"><span>Descrição do problema <b>*</b></span><textarea id="ticket-description" name="description" rows="6" maxlength="2000" placeholder="Explique o que aconteceu, quando começou e quais mensagens de erro aparecem..." required></textarea><div class="field-footer"><small>Descreva o problema com o máximo de detalhes possível.</small><small id="description-counter">0/2000</small></div><small class="field-error" id="description-error"></small></label>
+            </div>
+            <div class="form-actions"><button class="secondary-button" type="reset" id="cancel-form">Limpar formulário</button><button class="primary-button" type="submit">Registrar chamado <span aria-hidden="true">→</span></button></div>
+          </form>
+        </section>
+      </section>
+
+      <footer class="app-footer"><span>Ticketing System</span><span>Protótipo acadêmico • Dados salvos neste navegador</span></footer>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
